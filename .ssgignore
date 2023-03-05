@@ -1,8 +1,0 @@
-awk-scripts
-lowdown
-ssg
-script.awk
-.*
-public
-deploy.sh
-generate-scripts
