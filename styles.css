@@ -1,0 +1,40 @@
+body, td, th {
+  font: 18px sans-serif;
+}
+
+* {
+  line-height: 1.3em;
+}
+
+nav {
+  font-size: 2em;
+  border-bottom: 3px solid black;
+  padding: 0.25em 0;
+}
+
+nav > a {
+  color: white;
+  background-color: black;
+  padding: 0.25em;
+  text-decoration: none;
+}
+
+nav > #made-by {
+  float: right;
+}
+
+article {
+  max-width: 56em;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 610px) {
+  article {
+    max-width: calc(100vw - 16px);
+  }
+}
+
+code {
+  background-color: #e2e4e6;
+  padding: 0.05em 0.2em;
+}

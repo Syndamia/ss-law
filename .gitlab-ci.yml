@@ -1,0 +1,38 @@
+image: alpine
+
+ssg:
+  stage: deploy
+  script:
+    - apk add --no-cache wget
+    - ./generate-scripts/get-ssg.sh
+  artifacts:
+    paths:
+      - ssg
+    expire_in: 1 hour
+
+lowdown:
+  stage: deploy
+  script:
+    - apk add --no-cache git make gcc libc-dev
+    - ./generate-scripts/get-lowdown.sh
+  artifacts:
+    paths:
+      - lowdown/lowdown
+    expire_in: 1 hour
+
+pages:
+  stage: deploy
+  needs: ["lowdown", "ssg"]
+  variables:
+    SOURCE_FOLDER: .
+    AWK_FOLDER: awk-scripts
+    SSG_TITLE: John
+    SSG_BASE_URL: https://john.doe
+  script:
+    - mv ./lowdown/lowdown /usr/local/bin/
+    - ./generate-scripts/generate-site.sh
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
