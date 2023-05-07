@@ -53,8 +53,8 @@ jobs:
         env:
           SOURCE_FOLDER: .
           AWK_FOLDER: awk-scripts
-          SSG_TITLE: John
-          SSG_BASE_URL: https://john.doe
+          SSG_TITLE: S.S. Law
+          SSG_BASE_URL: https://syndamia.gitlab.io/ss-law/
         run: |
           chmod +x lowdown ssg
           mv ./lowdown /usr/local/bin/

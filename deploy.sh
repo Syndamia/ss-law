@@ -2,8 +2,8 @@
 
 export SOURCE_FOLDER=.
 export AWK_FOLDER=awk-scripts
-export SSG_TITLE=John
-export SSG_BASE_URL=https://john.doe
+export SSG_TITLE=S.S. Law
+export SSG_BASE_URL=https://syndamia.gitlab.io/ss-law/
 
 
 [ ! -f 'ssg' ] \
