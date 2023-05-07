@@ -10,7 +10,7 @@
 	<meta name="theme-color" content="#ffffff"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="./styles.css">
-	<title>S.S. Law &mdash; John</title> <!-- Inserted automatically by ssg -->
+	<title>S.S. Law &mdash; S.S. Law</title> <!-- Inserted automatically by ssg -->
 </head>
 <body>
 	<nav>
@@ -21,15 +21,34 @@
 	<article>
 <h1 id="s.s.-law">S.S. Law</h1>
 
-<p>This is a lightweight system&#47;template for creating your own static website, based upon the setup for <a href="https://syndamia.com">my website</a>, whose source is available in <a href="https://gitlab.com/Syndamia/syndamiadotcom">GitLab</a>.</p>
+<p>This is a lightweight system&#47;template for creating your own static website.</p>
 
-<p>You create webpages in Markdown, in the (fork of the) repository, which you&#8217;ll have to the commit and push.
-Then they&#8217;re converted and stapled together with <a href="https://romanzolotarev.com/ssg.html">ssg</a> and <a href="https://kristaps.bsd.lv/lowdown/">lowdown</a> and everything together is automatically &#8220;deployed&#8221; by a couple of scripts.
-Finally, if you desire more advanced editing of your generated pages, you can use <a href="#awk">AWK scripts</a>.</p>
+<p>You create webpages in Markdown, in (your fork of) the repository (which you&#8217;ll have to commit and push if you&#8217;re using GitHub or GitLab as a host).
+Afterwards they&#8217;re converted and &#8220;stapled&#8221; together with <a href="https://romanzolotarev.com/ssg.html">ssg</a> and <a href="https://kristaps.bsd.lv/lowdown/">lowdown</a>, then more advanced editing is done on them with <a href="#awk">AWK scripts</a> and finally everything is automatically &#8220;deployed&#8221;.
+All of those operations are done by a couple of shell scripts.</p>
 
-<p>However, remember, this is meant to be as simple as possible, while being very expandable.
-You&#8217;re <strong>encouraged</strong> to figure out what everything does and to modify it according to your needs.
+<p>It is based upon the setup for <a href="https://syndamia.com">my website</a>, so if you want to see a more advanced generation configuration, with some already created AWK scripts, <a href="https://gitlab.com/Syndamia/syndamiadotcom">click here</a>.</p>
+
+<p>The goal of this template is to be as simple, understandable and expandable as possible.
+You&#8217;re <strong>highly encouraged</strong> to figure out what everything does and to modify it according to your needs.
 Everything that comes out of the box is just default configurations, remove what you don&#8217;t need and replace what you don&#8217;t like.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ol>
+<li><a href="#how-it-all-works-and-what-are-files-for">How it all works and what are files for</a>
+
+<ol>
+<li><a href="#scripts">Scripts</a></li>
+<li><a href="#awk">AWK</a></li>
+</ol></li>
+<li><a href="#how-to-use">How to use</a>
+
+<ol>
+<li><a href="#configuring-generate-site">Configuring generate-site</a></li>
+</ol></li>
+<li><a href="#background">Background</a></li>
+</ol>
 
 <h2 id="how-it-all-works-and-what-are-files-for">How it all works and what are files for</h2>
 
@@ -42,35 +61,28 @@ Essentially, ssg takes all of your website files, where</p>
 </ul>
 
 <p>and puts everything in a nice folder (<code>public</code>).
-Afterwards, all AWK scripts are ran on all <code>.html</code> files inside that folder.</p>
+Afterwards, all AWK scripts are combined (which improves efficiency) into one and are ran on all <code>.html</code> files inside that folder.</p>
 
 <h3 id="scripts">Scripts</h3>
 
-<p>Inside the <code>generate-scripts</code> folder you&#8217;ll find the shell scripts, which automate the creation of your webpages.
-The <code>get-</code> scripts download ssg and lowdown, while <code>generate-site.sh</code> puts everything together to create those pages.</p>
+<p>Inside the <code>generate-scripts</code> folder you&#8217;ll find the shell scripts, which automate the creation of your website.
+The <code>get-</code> scripts download and &#8220;install&#8221; ssg and lowdown, while <code>generate-site.sh</code> does the actual site generation.</p>
 
 <p><code>.gitlab-ci.yml</code> and <code>.github&#47;workflows&#47;github-ci.yml</code> are your pipeline configurations.
 With them GitLab and GitHub (respectively) can generate your site automatically, with their servers, and host it for you too.
-<code>deploy.sh</code> is a more manual script which can be used to generate your site locally.
-All three use the stuff in <code>generate-scripts</code>.</p>
+<code>deploy.sh</code> is a manual script which can be used to generate your site without GitHub or GitLab.
+All three use the stuff in <code>generate-scripts</code>.
+I&#8217;m encouraging you to remove the ones that you know you won&#8217;t need.</p>
 
 <p><code>.ssgignore</code> has files and folder which will not be used for site generation.</p>
 
 <h3 id="awk">AWK</h3>
 
-<p>As mentioned, the preferred way to do special formatting to your generated (<code>html</code>) pages is via AWK scripts.
-With an AWK script, you specify what part of the document (current line) you want to modify, and then how to modify it.</p>
+<p>As mentioned, the preferred way to do special formatting to your generated (<code>html</code>) pages is via AWK scripts, because it&#8217;s decently simple and very powerful.
+An AWK script goes through the file, line by line, and then matches text patterns, which can then be processed any way you want (including modifying the current line).</p>
 
 <p>An example use case would be to add your own syntax, lets say you want to type <code>&#38;&#38;gb</code> in Markdown, and in the HTML page that should be replaced with some HTML code, containing the image of the British flag.
 Or alternatively, what if you want to automatically insert an image next to every occurrence of a word, without having to specify it in the Markdown file.</p>
-
-<p>The only caveat is that you have to write scripts in a specific manner.
-First are ran all scripts that start with a capital letter, then all of those starting with <code>_</code> and finally all of those with a lowercase letter.
-Your script names cannot start with other characters and you mustn&#8217;t rely on ordering of scripts.</p>
-
-<p>You also shouldn&#8217;t print the current line, that is done with the <code>_print.awk</code> script.
-So, before being printed, you modify the current line in your scripts with a capital letter in their name, then <code>_print.awk</code> prints the current lines, and finally your scripts with lower case letter do some post-priting procedures.
-This is done, because all scripts are combined into one, for improved efficiency.</p>
 
 <p>Good resources for the language are</p>
 
@@ -79,43 +91,72 @@ This is done, because all scripts are combined into one, for improved efficiency
 <li><a href="https://www.researchgate.net/publication/2425273_Awk_---_A_Pattern_Scanning_and_Processing_Language_Second_Edition">Awk &#8211; A Pattern Scanning and Processing Language</a></li>
 </ul>
 
+<p>However, there are some caveats with the AWK scripts, in the context of this template:</p>
+
+<ul>
+<li><p>If every script printed the current line, you would get duplicated lines, so that is handled by <code>generate-site.sh</code>.
+<em>Note:</em> If you don&#8217;t want to print a line, do <code>$0 = 0</code>.</p></li>
+<li><p>For this reason, files in <code>awk-scripts</code> are managed by their first character:</p>
+
+<ul>
+<li>If it is <code>#</code>, then that script is a &#8220;library&#8221;, just a collection of custom AWK functions</li>
+<li>If it is a capital latter, the script is ran before the line is printed</li>
+<li>If it is a lowercase letter, the script is ran after the line is printed</li>
+</ul>
+
+<p>Do remember that any ordering between scripts with the same starting character isn&#8217;t guaranteed!</p></li>
+<li><p>Running every script individually is inefficient, for every file, every script would have to open and close it, usually taking up about 100ms, which can stack up if you have a lot of content.
+Additionally, you can&#8217;t share data from a pre-print script to a post-print script.
+That is why all scripts are combined into one big script, in which first are the &#8220;libraries&#8221;, then the pre-print, the printing line and finally the post-print.
+This means that:</p>
+
+<ul>
+<li>global variable names must be unique between all scripts</li>
+<li><code>exit</code> cannot be used, instead have some sort of check in the &#8220;pattern&#8221; part of your rules (that need <code>exit</code>)</li>
+</ul></li>
+</ul>
+
 <h2 id="how-to-use">How to use</h2>
 
 <p>There are 3 provided ways to (easily) generate it, using pipelines and scripts:</p>
 
 <ul>
-<li><p>GitLab:</p>
+<li>GitLab:
 
 <ol>
-<li><p>Fork the repository</p></li>
-<li><p>Make sure <code>Pages</code> under <code>Settings&#47;General&#47;Visibility, project features, permissions&#47;Pages</code> and <code>CI&#47;CD</code> under <code>Settings&#47;General&#47;Visibility, project features, permissions&#47;Repository</code> are enabled.</p></li>
-<li><p>Run the pipeline (needed only for the first time): go to <code>CI&#47;CD &#47; Pipelines</code> and press the <code>Run pipeline</code> from the top right corner, then on the new window press <code>Run pipeline</code> (no need to input anything).</p></li>
+<li>Fork the repository</li>
+<li>Make sure <code>Pages</code> under <code>Settings&#47;General&#47;Visibility, project features, permissions&#47;Pages</code> and <code>CI&#47;CD</code> under <code>Settings&#47;General&#47;Visibility, project features, permissions&#47;Repository</code> are enabled.</li>
+<li>Run the pipeline (needed only for the first time): go to <code>CI&#47;CD &#47; Pipelines</code> and press the <code>Run pipeline</code> from the top right corner, then on the new window press <code>Run pipeline</code> (no need to input anything).</li>
 </ol>
 
 <ul>
 <li>After that, the pipeline will be ran automatically.
 You can view your website link and change domain in <code>Deployments&#47;Pages</code></li>
 </ul></li>
-<li><p>GitHub:</p>
+<li>GitHub:
 
 <ol>
-<li><p>Fork the <a href="https://github.com/Syndamia/ss-law">GitHub mirror</a></p></li>
-<li><p>Create a <code>gh-pages</code> branch in your fork: on the top left, next to &#8220;branch&#8221;, press on <code>main</code>, then enter <code>gh-pages</code> and press below <code>Create branch: gh-pages</code></p></li>
-<li><p>Inside <code>Settings&#47;Code and automation&#47;Pages</code>, you&#8217;ll need to select for <code>Source</code>, <code>Deploy from a branch</code> and for <code>Branch</code> select <code>gh-pages</code> and <code>&#47;(root)</code>.</p></li>
-<li><p>Enable actions: go to <code>Actions</code>, then press <code>I understand my workflows, go ahead and enable them</code></p></li>
-<li><p>Run the workflow (needed only for the first time): in the <code>Actions</code> page, to the left, press <code>Website on GitHub pages</code>, then in the blue rectangle, to the left, press <code>Run workflow</code>, and then again <code>Run workflow</code> in the pop-up</p></li>
+<li>Fork the <a href="https://github.com/Syndamia/ss-law">GitHub mirror</a></li>
+<li>Create a <code>gh-pages</code> branch in your fork: on the top left, next to &#8220;branch&#8221;, press on <code>main</code>, then enter <code>gh-pages</code> and press below <code>Create branch: gh-pages</code></li>
+<li>Inside <code>Settings&#47;Code and automation&#47;Pages</code>, you&#8217;ll need to select for <code>Source</code>, <code>Deploy from a branch</code> and for <code>Branch</code> select <code>gh-pages</code> and <code>&#47;(root)</code>.</li>
+<li>Enable actions: go to <code>Actions</code>, then press <code>I understand my workflows, go ahead and enable them</code></li>
+<li>Run the workflow (needed only for the first time): in the <code>Actions</code> page, to the left, press <code>Website on GitHub pages</code>, then in the blue rectangle, to the left, press <code>Run workflow</code>, and then again <code>Run workflow</code> in the pop-up</li>
 </ol>
 
 <ul>
 <li>After that, the workflow will be ran automatically.
 You can view your website link and change domain in <code>Settings&#47;Code and automation&#47;Pages</code>.</li>
 </ul></li>
-<li><p>Server&#47;locally (manually):</p>
+<li>Server&#47;locally (manually):
 
 <ol>
-<li><p>Fork the repository (either from GitLab or GitHub, whichever you prefer)</p></li>
-<li><p>Clone it</p></li>
-<li><p>Run the <code>deploy.sh</code> script</p></li>
+<li>Fork the repository (either from GitLab or GitHub, whichever you prefer)
+
+<ul>
+<li>This step can be skipped, if you intend to edit the website directly where it is hosted.</li>
+</ul></li>
+<li>Clone it</li>
+<li>Run the <code>deploy.sh</code> script</li>
 </ol>
 
 <ul>
@@ -124,9 +165,9 @@ You can directly just view and open the generated <code>.html</code> files, but 
 </ul></li>
 </ul>
 
-<h3 id="configuring-pipelines">Configuring pipelines</h3>
+<h3 id="configuring-generate-site">Configuring generate-site</h3>
 
-<p>There are a couple of variables which control how your website will be generated, via the pipelines:</p>
+<p>There are a couple of variables which control how your website will be generated:</p>
 
 <ul>
 <li><code>SOURCE_FOLDER</code>: The directory where the pages for your website are located (relative to the repository).
@@ -136,12 +177,12 @@ By default it&#8217;s <code>.</code>, meaning exactly where all other repo files
 <li><code>SSG_BASE_URL</code>: The base URL (<code>https:&#47;&#47;website.com</code>) of your website</li>
 </ul>
 
-<p>Depending on how you generate the website, those variables will be available either in:</p>
+<p>Depending on how you generate the website, those variables will be available&#47;have to be modified either in:</p>
 
 <ul>
-<li><code>.github&#47;workflows&#47;github-ci.yml</code> if using GitHub</li>
-<li><code>.gitlab-ci.yml</code> if using GitLab</li>
-<li><code>deploy.sh</code> if generating manually</li>
+<li><code>.github&#47;workflows&#47;github-ci.yml</code> (if using GitHub)</li>
+<li><code>.gitlab-ci.yml</code> (if using GitLab)</li>
+<li><code>deploy.sh</code> (if generating manually)</li>
 </ul>
 
 <h2 id="background">Background</h2>
