@@ -9,13 +9,13 @@ mkdir -p public
 
 createAWKscript() {
 	# "librarires"
-	find "$AWK_FOLDER" -type f -name "#*.awk"     -exec cat {} +  > "$AWK_FILE"
+	find "$AWK_FOLDER" -type f -name "#*.awk"     -exec cat {} +  > "script.awk"
 	# Scripts (before print)
-	find "$AWK_FOLDER" -type f -name "[A-Z]*.awk" -exec cat {} + >> "$AWK_FILE"
+	find "$AWK_FOLDER" -type f -name "[A-Z]*.awk" -exec cat {} + >> "script.awk"
 	# Line print
-	echo '{if ($0 != 0) print}' >> "$AWK_FILE"
+	echo '{if ($0 != 0) print}' >> "script.awk"
 	# Post-print scripts
-	find "$AWK_FOLDER" -type f -name "[a-z]*.awk" -exec cat {} + >> "$AWK_FILE"
+	find "$AWK_FOLDER" -type f -name "[a-z]*.awk" -exec cat {} + >> "script.awk"
 }
 runAWKscript() {
 	for file in $(find './public' -type f -name "*.html"); do
