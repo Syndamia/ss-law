@@ -107,7 +107,7 @@ There are 3 provided ways to (easily) generate it, using pipelines and scripts:
   3. Run the `deploy.sh` script
   
   - The website will be available inside the `public` folder.
-    You can directly just view and open the generated `.html` files, but it's better to an HTTP server.
+    You can directly just view and open the generated `.html` files, but it's better to use an HTTP server.
 
 ### Configuring generate-site
 
